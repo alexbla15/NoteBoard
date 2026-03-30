@@ -1,21 +1,10 @@
 import { PASTEL_COLORS } from "../constants";
 
 function ColorPicker({ id, onColorChange, currentColor, isOpen, setIsOpen }) {
-    const updateColor = async (newColor) => {
+    const updateColor = (newColor) => {
         // 1. update the state
         onColorChange(newColor);
         setIsOpen(false);
-
-        // 2. update the file
-        try {
-            await fetch(`http://localhost:5001/api/notes/${id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ color: newColor })
-            });
-        } catch (error) {
-            console.error("Failed to sync with server:", error);
-        }
     };
 
     return (

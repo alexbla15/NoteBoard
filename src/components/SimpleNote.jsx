@@ -2,19 +2,12 @@ import { useState } from "react";
 import NoteCard from "./NoteCard";
 import { PASTEL_COLORS } from "../constants";
 
-function SimpleNote({ id, title, text, initialColor = PASTEL_COLORS[0], order, onDelete, handlePin }) {
+function SimpleNote({ id, title, text, initialColor = PASTEL_COLORS[0], order, onDelete, handlePin, onUpdate }) {
     const [content, setContent] = useState(text);
 
-    const updateContentOnServer = async (newContent) => {
-        try {
-            await fetch(`http://localhost:5001/api/notes/${id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ content: newContent }) // שים לב שהשרת שלך מצפה ל-content
-            });
-        } catch (err) {
-            console.error("Failed to update content:", err);
-        }
+    const updateContent = (newContent) => {
+        setContent(newContent);
+        onUpdate(id, { content: newContent });
     };
 
     return (
@@ -25,8 +18,7 @@ function SimpleNote({ id, title, text, initialColor = PASTEL_COLORS[0], order, o
                 suppressContentEditableWarning={true}
                 onBlur={(e) => {
                     const newContent = e.target.innerText;
-                    setContent(newContent);
-                    updateContentOnServer(newContent);
+                    updateContent(newContent);
                 }}
                 style={{ 
                     outline: 'none', 

@@ -4,38 +4,38 @@ import SimpleNote from './components/SimpleNote';
 import AddNote from './components/AddNote';
 import ListCard from './components/ListCard';
 import ImageCard from './components/ImageCard';
+import { loadNotes, addNote, updateNote, deleteNote, pinNote } from './utils';
 
 function App() {
   const [notes, setNotes] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:5001/api/notes')
-      .then(res => res.json())
-      .then(data => setNotes(data))
-      .catch(err => console.error("Fetch error:", err));
+    const loadedNotes = loadNotes();
+    setNotes(loadedNotes);
   }, []);
 
   const sortedNotes = useMemo(() => {
     return [...notes].sort((a, b) => a.order - b.order);
   }, [notes]);
 
-  const handlePin = async (id) => {
-    fetch(`http://localhost:5001/api/notes/pin/${id}`, { method: 'PUT' });
-
-    const updatedNotes = notes.map(n => ({
-      ...n,
-      order: n.id === id ? 0 : n.order + 1
-    }));
+  const handlePin = (id) => {
+    const updatedNotes = pinNote(notes, id);
     setNotes(updatedNotes);
   };
 
-  const deleteNote = async (id) => {
-    try {
-      await fetch(`http://localhost:5001/api/notes/${id}`, { method: 'DELETE' });
-      setNotes(notes.filter(note => note.id !== id));
-    } catch (error) {
-      console.error("Failed to delete:", error);
-    }
+  const handleDelete = (id) => {
+    const updatedNotes = deleteNote(notes, id);
+    setNotes(updatedNotes);
+  };
+
+  const handleAddNote = (newNote) => {
+    const updatedNotes = addNote(notes, newNote);
+    setNotes(updatedNotes);
+  };
+
+  const handleUpdateNote = (id, updates) => {
+    const updatedNotes = updateNote(notes, id, updates);
+    setNotes(updatedNotes);
   };
 
   const renderNote = (note) => {
@@ -46,7 +46,8 @@ function App() {
       initialColor: note.color,
       order: note.order,
       handlePin,
-      onDelete: deleteNote
+      onDelete: handleDelete,
+      onUpdate: handleUpdateNote
     };
 
     switch (note.type) {
@@ -59,7 +60,7 @@ function App() {
 
   return (
     <div className="container">
-      <AddNote onNoteAdded={(newNote) => setNotes([...notes, newNote])} />
+      <AddNote onNoteAdded={handleAddNote} />
       <div className="note-board">
         {sortedNotes.map(renderNote)}
       </div>

@@ -10,7 +10,7 @@ function AddNote({ onNoteAdded }) {
     { id: 'image', icon: 'fa-regular fa-image', label: 'Image' }
   ];
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     if (!title.trim()) return;
 
@@ -22,18 +22,8 @@ function AddNote({ onNoteAdded }) {
       imageUrl: type === 'image' ? 'https://picsum.photos' : undefined
     };
 
-    try {
-      const response = await fetch('http://localhost:5001/api/notes', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newNote)
-      });
-      const savedNote = await response.json();
-      onNoteAdded(savedNote);
-      setTitle(''); 
-    } catch (err) {
-      console.error("Error adding note:", err);
-    }
+    onNoteAdded(newNote);
+    setTitle(''); 
   };
 
   return (

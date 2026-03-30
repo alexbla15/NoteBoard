@@ -3,21 +3,19 @@ import NoteController from "./NoteController";
 import ColorPicker from "./ColorPicker";
 import { PASTEL_COLORS } from "../constants";
 
-function NoteCard({ id, title, children, initialColor = PASTEL_COLORS[3], order, onDelete, handlePin }) {
+function NoteCard({ id, title, children, initialColor = PASTEL_COLORS[3], order, onDelete, handlePin, onUpdate }) {
     const [bgColor, setBgColor] = useState(initialColor);
     const [isPickerOpen, setIsPickerOpen] = useState(false);
     const [currentTitle, setCurrentTitle] = useState(title);
 
-    const updateTitleOnServer = async (newTitle) => {
-        try {
-            await fetch(`http://localhost:5001/api/notes/${id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ title: newTitle })
-            });
-        } catch (err) {
-            console.error("Failed to update title:", err);
-        }
+    const updateTitle = (newTitle) => {
+        setCurrentTitle(newTitle);
+        onUpdate(id, { title: newTitle });
+    };
+
+    const updateColor = (color) => {
+        setBgColor(color);
+        onUpdate(id, { color });
     };
 
     return (
@@ -28,8 +26,7 @@ function NoteCard({ id, title, children, initialColor = PASTEL_COLORS[3], order,
                 suppressContentEditableWarning={true}
                 onBlur={(e) => {
                     const newTitle = e.target.innerText;
-                    setCurrentTitle(newTitle);
-                    updateTitleOnServer(newTitle);
+                    updateTitle(newTitle);
                 }}
                 style={{ outline: 'none', cursor: 'text' }}
             >{currentTitle}</h3>
@@ -48,7 +45,7 @@ function NoteCard({ id, title, children, initialColor = PASTEL_COLORS[3], order,
                     </>
                 )}
                 <ColorPicker id={id} currentColor={bgColor} isOpen={isPickerOpen}
-                    setIsOpen={setIsPickerOpen} onColorChange={(color) => setBgColor(color)} />
+                    setIsOpen={setIsPickerOpen} onColorChange={updateColor} />
             </div>
         </div>
     );

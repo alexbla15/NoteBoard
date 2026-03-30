@@ -2,31 +2,25 @@ import { useState } from "react";
 import NoteCard from "./NoteCard";
 import { PASTEL_COLORS } from "../constants";
 
-function ListCard({ id, title, items: initialItems = [], initialColor = PASTEL_COLORS[1], order, onDelete, handlePin }) {
+function ListCard({ id, title, items: initialItems = [], initialColor = PASTEL_COLORS[1], order, onDelete, handlePin, onUpdate }) {
     const [list, setList] = useState(initialItems);
     const [newItem, setNewItem] = useState('');
 
-    const updateItemsOnServer = async (newList) => {
+    const updateItems = (newList) => {
         setList(newList);
-        try {
-            await fetch(`http://localhost:5001/api/notes/${id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ items: newList })
-            });
-        } catch (err) { console.error(err); }
+        onUpdate(id, { items: newList });
     };
 
     const addItem = () => {
         if (!newItem.trim()) return;
         const newList = [...list, newItem];
-        updateItemsOnServer(newList);
+        updateItems(newList);
         setNewItem('');
     };
 
     const deleteItem = (indexToDelete) => {
         const newList = list.filter((_, index) => index !== indexToDelete);
-        updateItemsOnServer(newList);
+        updateItems(newList);
     };
     
     return (

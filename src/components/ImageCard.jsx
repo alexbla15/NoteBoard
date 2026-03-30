@@ -2,24 +2,15 @@ import { useState } from "react";
 import NoteCard from "./NoteCard";
 import { PASTEL_COLORS } from "../constants";
 
-function ImageCard({ id, title, url, initialColor = PASTEL_COLORS[2], order, onDelete, handlePin}) {
+function ImageCard({ id, title, url, initialColor = PASTEL_COLORS[2], order, onDelete, handlePin, onUpdate}) {
     const [currentUrl, setCurrentUrl] = useState(url);
     const [isEditing, setIsEditing] = useState(false);
     const [tempUrl, setTempUrl] = useState(url);
 
-    const saveUrl = async () => {
+    const saveUrl = () => {
         setCurrentUrl(tempUrl);
         setIsEditing(false);
-
-        try {
-            await fetch(`http://localhost:5001/api/notes/${id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ imageUrl: tempUrl })
-            });
-        } catch (err) {
-            console.error("Failed to update image:", err);
-        }
+        onUpdate(id, { imageUrl: tempUrl });
     };
 
     return (
