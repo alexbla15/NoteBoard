@@ -11,7 +11,7 @@ function SimpleNote({ id, title, text, initialColor = PASTEL_COLORS[0], order, o
     };
 
     return (
-        <NoteCard id={id} title={title} order={order} initialColor={initialColor} onDelete={onDelete} handlePin={handlePin}>
+        <NoteCard id={id} title={title} order={order} initialColor={initialColor} onDelete={onDelete} handlePin={handlePin} onUpdate={onUpdate}>
             <p 
                 className="note-text"
                 contentEditable={true}

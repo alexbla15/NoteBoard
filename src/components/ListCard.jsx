@@ -24,7 +24,7 @@ function ListCard({ id, title, items: initialItems = [], initialColor = PASTEL_C
     };
     
     return (
-        <NoteCard id={id} title={title}  order={order} initialColor={initialColor} onDelete={onDelete} handlePin={handlePin}>
+        <NoteCard id={id} title={title}  order={order} initialColor={initialColor} onDelete={onDelete} handlePin={handlePin} onUpdate={onUpdate}>
             <div className="list-container">
                 {list.map((item, index) => (
                     <div key={index} className="list-row">

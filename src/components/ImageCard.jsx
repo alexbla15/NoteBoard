@@ -14,7 +14,7 @@ function ImageCard({ id, title, url, initialColor = PASTEL_COLORS[2], order, onD
     };
 
     return (
-        <NoteCard id={id} title={title} order={order} initialColor={initialColor} onDelete={onDelete} handlePin={handlePin}>
+        <NoteCard id={id} title={title} order={order} initialColor={initialColor} onDelete={onDelete} handlePin={handlePin} onUpdate={onUpdate}>
             <div className="image-card-body">
                 {isEditing ? (
                     <div className="url-edit-mode">
