@@ -18,6 +18,12 @@ function ListCard({ id, title, items: initialItems = [], initialColor = PASTEL_C
         setNewItem('');
     };
 
+    const editItem = (index, newText) => {
+        const newList = [...list];
+        newList[index] = newText;
+        updateItems(newList);
+    };
+
     const deleteItem = (indexToDelete) => {
         const newList = list.filter((_, index) => index !== indexToDelete);
         updateItems(newList);
@@ -29,7 +35,20 @@ function ListCard({ id, title, items: initialItems = [], initialColor = PASTEL_C
                 {list.map((item, index) => (
                     <div key={index} className="list-row">
                         <span className="list-bullet">•</span>
-                        <span className="list-text">{item}</span>
+                        <span 
+                            className="list-text"
+                            contentEditable={true}
+                            suppressContentEditableWarning={true}
+                            onBlur={(e) => {
+                                const newText = e.target.innerText;
+                                if (newText.trim() !== item) {
+                                    editItem(index, newText);
+                                }
+                            }}
+                            style={{ outline: 'none', cursor: 'text' }}
+                        >
+                            {item}
+                        </span>
                         <button className="delete-item-btn" onClick={() => deleteItem(index)}>
                             <i className="fa-solid fa-xmark"></i>
                         </button>
